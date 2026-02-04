@@ -1,65 +1,66 @@
 # Titanic Survival Prediction
 
 📊 **Project Type:** Machine Learning Classification (Tutorial / Benchmark Project)  
-📅 **Original work completed:** October – December 2024  
+📅 **Original project completion:** October – December 2024  
 📤 **Repository updated & published:** February 2026  
 📦 **Dataset:** Kaggle – Titanic: Machine Learning from Disaster  
 
 ---
 
-## 🚢 Overview
+## 🚢 Project Overview
 
-This repository contains an IPython Notebook tutorial for the Kaggle competition  
-**“Titanic: Machine Learning from Disaster”**.
+This repository contains an IPython / Jupyter Notebook–based machine learning analysis for the Kaggle competition  
+**“Titanic: Machine Learning from Disaster.”**
 
-The project demonstrates a complete, beginner-to-intermediate **end-to-end data analysis and machine learning workflow** using Python and common PyData libraries. It is intended as a **learning and reference project** for those interested in:
+The project demonstrates a complete end-to-end **data analytics and machine learning workflow** using Python and standard PyData libraries. It is designed as a **learning and reference project** for individuals interested in:
 
 - Data analytics  
 - Applied machine learning  
-- Kaggle-style data science workflows  
+- Kaggle-style data science competitions  
 
-The core analysis was completed in **late 2024** and later **cleaned, documented, and published in February 2026** as part of my GitHub portfolio.
+The core analysis and implementation were completed in **late 2024**.  
+In **February 2026**, the project was cleaned, documented, and published on GitHub as part of a professional portfolio.
 
 ---
 
 ## 🎯 Project Goals
 
-- Demonstrate a practical machine learning workflow on a real-world dataset  
-- Perform data cleaning, exploration, and feature engineering  
-- Apply and compare multiple supervised learning models  
+- Perform data cleaning and preprocessing on real-world tabular data  
+- Explore survival patterns using visual analytics  
+- Engineer meaningful features from raw inputs  
+- Train and compare multiple supervised learning models  
 - Validate results using cross-validation  
 - Generate predictions suitable for Kaggle submission  
 
 ---
 
-## 🧠 What This Notebook Demonstrates
+## 🧠 What This Project Demonstrates
 
 ### 📥 Data Handling
-- Importing data using **Pandas**
+- Importing datasets with **Pandas**
 - Handling missing and noisy values
-- Preparing tabular data for modeling
+- Preparing features for machine learning models
 
 ### 📊 Exploratory Data Analysis (EDA)
-- Visual exploration of survival patterns
-- Analysis by gender, class, age, and family size
-- Matplotlib-based visualisations
+- Survival analysis by gender, class, age, and family size
+- Visualisation using **Matplotlib**
 
 ### 🤖 Machine Learning Models
 - Logistic Regression
 - Support Vector Machine (SVM) with multiple kernels
 - Random Forest Classifier
 
-### 📈 Model Evaluation
+### 📈 Evaluation & Validation
 - K-fold cross-validation
-- Accuracy comparison
-- Interpretation of model results
+- Accuracy comparison across models
+- Interpretation of results and model behaviour
 
 ### 📤 Output
-- Generation of prediction files for Kaggle submission
+- Generation of prediction files compatible with Kaggle submissions
 
 ---
 
-## 🛠️ Technologies & Dependencies
+## 🛠️ Technologies & Libraries Used
 
 - **Python**
 - **NumPy**
