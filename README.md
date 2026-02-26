@@ -1,4 +1,4 @@
-# Titanic-Survival-Prediction
+
 # Titanic Survival Prediction
 
 📊 **Project Type:** Machine Learning Classification (Tutorial / Benchmark Project)  
