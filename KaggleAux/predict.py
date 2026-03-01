@@ -10,17 +10,17 @@ def get_dataframe_intersection(df, comparator1, comparator2):
     Parameters
     ----------
     comparator1: DataFrame
-        DataFrame to preform comparison on.
+        DataFrame to perform comparison on.
     comparator2: DataFrame
         DataFrame to compare with.
 
     Returns
     -------
     DataFrame:
-        Data frame with columns not found in comparator dropped.
+        DataFrame with columns not found in comparator dropped.
 
     """
-    to_drop = list((c for c in comparator1 if c not in comparator2))
+    to_drop = [c for c in comparator1 if c not in comparator2]
     return df.drop(to_drop, axis=1)
 
 
@@ -31,72 +31,68 @@ def get_dataframes_intersections(df1, comparator1, df2, comparator2):
     Parameters
     ----------
     comparator1: DataFrame
-        DataFrame to preform comparison on.
+        DataFrame to perform comparison on.
     comparator2: DataFrame
         DataFrame to compare with.
 
     Returns
     -------
     Tuple:
-        The resultingDataframe with columns not found in comparator dropped.
+        The resulting DataFrames with columns not found in comparator dropped.
 
     """
-    comparator1 = get_dataframe_intersection(df1, comparator1, comparator2)
-    comparator2 = get_dataframe_intersection(df2, comparator2, comparator1)
-    return comparator1, comparator2
+    result1 = get_dataframe_intersection(df1, comparator1, comparator2)
+    result2 = get_dataframe_intersection(df2, comparator2, comparator1)
+    return result1, result2
 
 
 def predict(test_data, results, model_name):
     """
-    Return predictions of based on model resutls.
+    Return predictions based on model results.
 
     Parameters
     ----------
     test_data: DataFrame
-        should be test data you are trying to predict
+        Test data to generate predictions for.
     results: dict
-        should be dict of your models results wrapper and the formula used
-        to produce it.
-            ie.
-            results['Model_Name'] = {
-            [<statsmodels.regression.linear_model.RegressionResultsWrapper> , 
-            "Price ~ I(Supply, Demand)]
-            }
+        Dict mapping model names to [results_wrapper, formula] pairs.
+            e.g.
+            results['Logit'] = [
+                <statsmodels.discrete.discrete_model.BinaryResultsWrapper>,
+                'Survived ~ C(Pclass) + C(Sex) + Age + SibSp + C(Embarked)'
+            ]
     model_name: str
-        should be the name of your model. You can iterate through the results dict.
+        Key into the results dict identifying which model to use.
 
     Returns
     -------
-    NumPy array
+    numpy.ndarray
         Predictions in a flat NumPy array.
 
     Example
     -------
-    results = {'Logit': [<statsmodels.discrete.discrete_model.BinaryResultsWrapper at 0x117896650>,
-               'survived ~ C(pclass) + C(sex) + age + sibsp  + C(embarked)']}
-    compared_resuts = predict(test_data, results, 'Logit')
+    results = {'Logit': [fitted_logit_model, 'Survived ~ C(Pclass) + C(Sex) + Age']}
+    predictions = predict(test_data, results, 'Logit')
 
     """
     model_params = DataFrame(results[model_name][0].params)
     formula = results[model_name][1]
 
-    # Create regression friendly test DataFrame
+    # Create regression-friendly test DataFrame
     yt, xt = dmatrices(formula, data=test_data, return_type='dataframe')
-    xt, model_params = get_dataframes_intersections(xt, xt.columns,
-                                                    model_params, model_params.index)
+    xt, model_params = get_dataframes_intersections(
+        xt, xt.columns, model_params, model_params.index
+    )
+
     # Convert to NumPy arrays for performance
     model_params = np.asarray(model_params)
-    yt = np.asarray(yt)
-    yt = yt.ravel()
+    yt = np.asarray(yt).ravel()
     xt = np.asarray(xt)
 
-    # Use our models to create predictions
+    # Broadcast model parameters across all rows and compute dot product
     row, col = xt.shape
     model_parameters = model_params.ravel()
-    model_array = list((model_parameters for parameter in xrange(row)))
-    model_array = np.asarray(model_array)
+    model_array = np.tile(model_parameters, (row, 1))
 
-    # Multiply matrix together
-    predictions = np.multiply(xt, model_array)
-    predictions = np.sum(predictions, axis=1)
+    predictions = np.sum(np.multiply(xt, model_array), axis=1)
     return predictions

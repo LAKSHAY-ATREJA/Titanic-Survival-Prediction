@@ -1,52 +1,58 @@
-# A basic model using only an individual's gender as a predictor.
-# y=b0+b1(gender)
+"""
+Simple Gender-Based Survival Model
+====================================
+Predicts survival using only an individual's gender as a predictor.
+Model: y = b0 + b1 * (gender)
+"""
 
-import csv as csv
+import csv
+import os
 import numpy as np
-data=[]
 
-with open('train.csv', 'rb') as f: # deals with opening and closing
-    csv_file = csv.reader(open('train.csv', 'rb'))
-    csv_file.next() # skips the header, so we can get to the data. 
-    for row in csv_file: 
-        data.append(row) 
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data')
+TRAIN_FILE = os.path.join(DATA_DIR, 'train.csv')
+OUTPUT_FILE = os.path.join(DATA_DIR, 'output', 'gender_model_predictions.csv')
 
-# Then we convert  our list to NumPy array for more efficient data manipulation. 
-data = np.array(data) 
+data = []
 
-#Separates data by gender
-women_only_stats = data[0::,3] == "female" 
-men_only_stats = data[0::,3] != "female"
+with open(TRAIN_FILE, 'r', newline='') as f:
+    reader = csv.reader(f)
+    next(reader)  # skip header
+    for row in reader:
+        data.append(row)
 
+data = np.array(data)
 
-# Calculates survival proportions by gender
-women_onboard = data[women_only_stats,0].astype(np.float)
-men_onboard = data[men_only_stats,0].astype(np.float)
+# Separate data by gender (column index 4 = Sex in train.csv)
+women_mask = data[:, 4] == 'female'
+men_mask = data[:, 4] != 'female'
 
-proportion_women_survived = np.sum(women_onboard) / np.size(women_onboard)
-proportion_men_survived = np.sum(men_onboard) / np.size(men_onboard)
-proportion_survivors =  (np.sum(data[0::,0].astype(np.float)))/(np.size(data[0::,0].astype(np.float)))
+# Survival is column index 1
+women_survived = data[women_mask, 1].astype(float)
+men_survived = data[men_mask, 1].astype(float)
+all_survived = data[:, 1].astype(float)
 
-                         
-# Prints proportions
-print 'Proportion of people who survived is %s' % proportion_survivors
-print 'Proportion of women who survived is %s' % proportion_women_survived
-print 'Proportion of men who survived is %s' % proportion_men_survived
+proportion_survived = all_survived.sum() / all_survived.size
+proportion_women_survived = women_survived.sum() / women_survived.size
+proportion_men_survived = men_survived.sum() / men_survived.size
 
-# Reads in the 'train' file for a comparative result
-with open('train.csv', 'rb') as f2:
-    f2.next() # Skips header 
-    cop_open_file=open("train_results_genderbasedmodelpy.csv", "wb")
-    open_file=csv.writer(cop_open_file) #theres no header in this guy
-    for row in csv.reader(f2):
-        if row[3] == 'female':
-            print row[3]
-            row[0]='1' #Insert the prediction at the start of the row
-            open_file.writerow(row) #Write the row to the file
-        else:
-            print row[3]
-            row[0]='0'
-            open_file.writerow(row)
-    cop_open_file.close()
+print('Proportion of people who survived: {:.4f}'.format(proportion_survived))
+print('Proportion of women who survived:  {:.4f}'.format(proportion_women_survived))
+print('Proportion of men who survived:    {:.4f}'.format(proportion_men_survived))
 
-print "Analysis ended"
+os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
+
+with open(TRAIN_FILE, 'r', newline='') as f_in, \
+     open(OUTPUT_FILE, 'w', newline='') as f_out:
+    reader = csv.reader(f_in)
+    writer = csv.writer(f_out)
+
+    header = next(reader)
+    writer.writerow(['Predicted'] + header)
+
+    for row in reader:
+        prediction = '1' if row[4] == 'female' else '0'
+        writer.writerow([prediction] + row)
+
+print('Predictions saved to:', OUTPUT_FILE)
+print('Analysis complete.')

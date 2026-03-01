@@ -1,109 +1,95 @@
-#RandomForest, non parametric modeling
-#agconti
+"""
+Random Forest Classifier
+==========================
+Non-parametric survival prediction using a Random Forest ensemble.
+"""
 
+import os
+import csv
 import numpy as np
-import csv as csv
 from sklearn.ensemble import RandomForestClassifier
 
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data')
+TRAIN_FILE = os.path.join(DATA_DIR, 'train.csv')
+TEST_FILE = os.path.join(DATA_DIR, 'test.csv')
+OUTPUT_FILE = os.path.join(DATA_DIR, 'output', 'random_forest_predictions.csv')
 
-train_data=[] # Create a bin to hold our training data.
-test_data=[]  # Create a bin to hold our test data.
+train_data = []
+test_data = []
 
-# Read in CSVs, train and test
+with open(TRAIN_FILE, 'r', newline='') as f:
+    reader = csv.reader(f)
+    next(reader)  # skip header
+    for row in reader:
+        train_data.append(row)
+train_data = np.array(train_data)
 
-with open('train.csv', 'rb') as f1:
-    header = csv_file_object.next()
-    for row in  csv.reader(f1):       # Skip through each row in the csv file
-        train_data.append(row)        # Add each row to the data variable
-    train_data = np.array(train_data) # Then convert from a list to a NumPy array
+with open(TEST_FILE, 'r', newline='') as f:
+    reader = csv.reader(f)
+    next(reader)  # skip header
+    for row in reader:
+        test_data.append(row)
+test_data = np.array(test_data)
 
-with open('test.csv', 'rb') as f2:  # Load in the test csv file
-    f2.next()                       # Skip the fist line because it is a header
-    for row in csv.reader(f2):      # Skip through each row in the csv file
-        test_data.append(row)       # Add each row to the data variable
-    test_data = np.array(test_data) # Then convert from a list to an array
+# Encode Sex: male=1, female=0 (train col 4, test col 3)
+train_data[train_data[:, 4] == 'male', 4] = '1'
+train_data[train_data[:, 4] == 'female', 4] = '0'
 
-# Convert strings to numbers so we can perform computational analysis    
-# The gender classifier in column 3: Male = 1, female = 0:
-train_data[train_data[0::,3] == 'male', 3] = 1
-train_data[train_data[0::,3] == 'female', 3] = 0
+test_data[test_data[:, 3] == 'male', 3] = '1'
+test_data[test_data[:, 3] == 'female', 3] = '0'
 
-# Embark C = 0, S = 1, Q = 2
-train_data[train_data[0::,10] == 'C', 10] = 0
-train_data[train_data[0::,10] == 'S', 10] = 1
-train_data[train_data[0::,10] == 'Q', 10] = 2
+# Encode Embarked: C=0, S=1, Q=2 (train col 11, test col 10)
+for col, arr in [(11, train_data), (10, test_data)]:
+    arr[arr[:, col] == 'C', col] = '0'
+    arr[arr[:, col] == 'S', col] = '1'
+    arr[arr[:, col] == 'Q', col] = '2'
 
-# Transfer Null observations
-# So where there is no price, I will assume price on median of that class
-# Where there is no age I will give median of all ages
+# Fill missing Age with median (train col 5, test col 4)
+for col, arr in [(5, train_data), (4, test_data)]:
+    known = arr[arr[:, col] != '', col].astype(float)
+    arr[arr[:, col] == '', col] = str(np.median(known))
 
-# All the ages with no data make the median of the data
-train_data[train_data[0::,4] == '',4] = np.median(train_data[train_data[0::,4]\
-                                           != '',4].astype(np.float))
-# All missing embarks just make them embark from most common place
-train_data[train_data[0::,10] == '',10] = np.round(np.mean(train_data[train_data[0::,10]\
-                                                   != '',10].astype(np.float)))
+# Fill missing Embarked with mode
+for col, arr in [(11, train_data), (10, test_data)]:
+    known = arr[arr[:, col] != '', col].astype(float)
+    arr[arr[:, col] == '', col] = str(round(np.mean(known)))
 
-train_data = np.delete(train_data,[2,7,9],1) #remove the name data, cabin and ticket
-# I need to do the same with the test data now so that the columns are in the same
-# as the training data
+# Fill missing Fare in test data with median per class (test col 8)
+for i in range(test_data.shape[0]):
+    if test_data[i, 8] == '':
+        pclass = test_data[i, 1]
+        same_class = test_data[(test_data[:, 8] != '') & (test_data[:, 1] == pclass), 8].astype(float)
+        test_data[i, 8] = str(np.median(same_class)) if same_class.size > 0 else '0'
 
+# Drop Name (col 2), Ticket (col 8), Cabin (col 10) from train
+# Columns: 0=PassengerId, 1=Survived, 2=Pclass, 3=Name, 4=Sex, 5=Age,
+#          6=SibSp, 7=Parch, 8=Ticket, 9=Fare, 10=Cabin, 11=Embarked
+train_data = np.delete(train_data, [3, 8, 10], axis=1)
 
+# Drop Name (col 1), Ticket (col 7), Cabin (col 9) from test
+# Columns: 0=PassengerId, 1=Pclass, 2=Name, 3=Sex, 4=Age,
+#          5=SibSp, 6=Parch, 7=Ticket, 8=Fare, 9=Cabin, 10=Embarked
+test_data = np.delete(test_data, [2, 7, 9], axis=1)
 
-# I need to convert all strings to integer classifiers:
-# male = 1, female = 0:
-test_data[test_data[0::,2] == 'male',2] = 1
-test_data[test_data[0::,2] == 'female',2] = 0
+print('Training Random Forest...')
+forest = RandomForestClassifier(n_estimators=100, random_state=42)
+forest.fit(train_data[:, 2:].astype(float), train_data[:, 1].astype(float))
 
-# Embark C = 0, S = 1, Q = 2
-test_data[test_data[0::,9] == 'C',9] = 0 
-test_data[test_data[0::,9] == 'S',9] = 1
-test_data[test_data[0::,9] =='Q',9] = 2
+print('Generating predictions...')
+predictions = forest.predict(test_data[:, 1:].astype(float))
 
-# All the ages with no data make the median of the data
-test_data[test_data[0::,3] == '',3] = np.median(test_data[test_data[0::,3]\
-                                           != '',3].astype(np.float))
-# All missing embarks just make them embark from most common place
-test_data[test_data[0::,9] == '',9] = np.round(np.median(test_data[test_data[0::,9]\
-                                                   != '',9].astype(np.float)))
-# All the missing prices assume median of their respective class
-for i in xrange(np.size(test_data[0::,0])):
-    if test_data[i,7] == '':
-        test_data[i,7] = np.median(test_data[(test_data[0::,7] != '') &\
-                                             (test_data[0::,0] == test_data[i,0])\
-            ,7].astype(np.float))
+os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 
-test_data = np.delete(test_data,[1,6,8],1) # Remove the name data, cabin and ticket
+with open(TEST_FILE, 'r', newline='') as f_in, \
+     open(OUTPUT_FILE, 'w', newline='') as f_out:
+    reader = csv.reader(f_in)
+    writer = csv.writer(f_out)
 
+    writer.writerow(['PassengerId', 'Survived'])
+    next(reader)  # skip header
 
-# The data is now ready to go. So lets train then test!
+    for i, row in enumerate(reader):
+        writer.writerow([row[0], int(predictions[i])])
 
-print 'Training '
-forest = RandomForestClassifier(n_estimators = 1000)
-
-forest = forest.fit(train_data[0::,1::],\
-                    train_data[0::,0])
-
-print 'Predicting'
-output = forest.predict(test_data) #predict results using our CLEANED data
-
-
-# Write Results to fie
-# open csv
-seedling=open("agcfirstforest.csv", "wb")
-test=open('test.csv', 'rb')
-forest_Csv = csv.writer(seedling)
-test_file_object = csv.reader(test) 
-
-test_file_object.next() # Header control
-
-i = 0
-for row in test_file_object:
-    row.insert(0,output[i].astype(np.uint8))
-    forest_Csv.writerow(row)
-    i += 1
- 
-test.close()
-seedling.close()
-
-print "Analysis has Finished"
+print('Predictions saved to:', OUTPUT_FILE)
+print('Analysis complete.')
