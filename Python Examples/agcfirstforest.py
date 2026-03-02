@@ -52,7 +52,8 @@ for col, arr in [(5, train_data), (4, test_data)]:
 # Fill missing Embarked with mode
 for col, arr in [(11, train_data), (10, test_data)]:
     known = arr[arr[:, col] != '', col].astype(float)
-    arr[arr[:, col] == '', col] = str(round(np.mean(known)))
+    values, counts = np.unique(known, return_counts=True)
+    arr[arr[:, col] == '', col] = str(int(values[np.argmax(counts)]))
 
 # Fill missing Fare in test data with median per class (test col 8)
 for i in range(test_data.shape[0]):

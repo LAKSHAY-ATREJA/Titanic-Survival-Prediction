@@ -1,27 +1,44 @@
-# Titanic Survival Prediction
+# 🚢 Titanic Survival Predictor
 
 > **Kaggle Competition:** [Titanic – Machine Learning from Disaster](https://www.kaggle.com/c/titanic)
 
-A complete end-to-end machine learning project that predicts passenger survival on the Titanic using Python and the PyData ecosystem. The project covers exploratory data analysis, feature engineering, and comparison of three supervised learning models.
+A complete, production-ready machine learning project that predicts passenger survival on the Titanic. It includes an interactive Streamlit web app, three ML models with cross-validation, and full EDA visualisations.
+
+---
+
+## Live Demo
+
+[![GitHub](https://img.shields.io/badge/GitHub-LAKSHAY--ATREJA-181717?logo=github)](https://github.com/LAKSHAY-ATREJA/Titanic-Survival-Prediction)
+
+> **Deploy in one click using Streamlit Community Cloud:**
+> 1. Fork this repo on GitHub
+> 2. Visit [share.streamlit.io](https://share.streamlit.io) → "New app" → select your fork
+> 3. Set main file to `app.py` → Deploy
 
 ---
 
 ## Features
 
-- **Exploratory Data Analysis** — survival breakdowns by gender, class, age, and embarkation port, visualised with Matplotlib
-- **Feature Engineering** — family size, is-alone flag, median imputation for missing age and fare values
-- **Three ML models** — Logistic Regression, SVM (RBF kernel), and Random Forest Classifier
-- **Rigorous evaluation** — 5-fold stratified cross-validation with mean accuracy and standard deviation
-- **Kaggle-ready output** — generates `PassengerId, Survived` CSV files for each model
-- **Standalone demo script** — reproduces the full pipeline in one command
+| Feature | Description |
+|---|---|
+| 🔮 **Interactive predictor** | Enter any passenger profile and get instant survival predictions from all three models |
+| 📊 **Exploratory Data Analysis** | Survival breakdowns by gender, class, age, and embarkation port |
+| 🤖 **Three ML models** | Logistic Regression, SVM (RBF), and Random Forest with probability outputs |
+| 📈 **Rigorous evaluation** | 5-fold stratified cross-validation with mean accuracy and std deviation |
+| 🗂 **Kaggle-ready output** | Generates `PassengerId, Survived` CSV files for each model |
+| 🚀 **CI/CD ready** | GitHub Actions workflow for automatic Hugging Face Spaces deployment |
 
 ---
 
-## Example Output
+## Demo Output
 
-Running `python demo.py` produces:
+Running `python3 demo.py` produces:
 
 ```
+============================================================
+  Titanic Survival Prediction — Demo
+============================================================
+
 ============================================================
 DATASET SUMMARY
 ============================================================
@@ -49,7 +66,9 @@ MODEL EVALUATION  (5-Fold Stratified Cross-Validation)
 ============================================================
 ```
 
-Charts are saved to `images/`:
+---
+
+## Screenshots
 
 | Survival Analysis | Feature Importance |
 |---|---|
@@ -61,6 +80,11 @@ Charts are saved to `images/`:
 
 ```
 Titanic-Survival-Prediction/
+├── .github/
+│   └── workflows/
+│       └── deploy-hf-spaces.yml   # Auto-deploy to Hugging Face Spaces
+├── .streamlit/
+│   └── config.toml                # Streamlit theme config
 ├── data/
 │   ├── train.csv                  # Training set (891 passengers)
 │   ├── test.csv                   # Test set (418 passengers)
@@ -68,31 +92,18 @@ Titanic-Survival-Prediction/
 ├── images/                        # EDA and result charts
 ├── KaggleAux/
 │   ├── __init__.py
-│   └── predict.py                 # Utility: statsmodels logit prediction helper
+│   └── predict.py                 # statsmodels logit prediction helper
 ├── Python Examples/
 │   ├── agc_simp_gendermodel.py    # Baseline: gender-only model
 │   ├── agcgenderclassmodel.py     # Gender + class + fare lookup model
-│   ├── agcfirstforest.py          # Random Forest with raw NumPy arrays
-│   └── agc_embark_class_gender.py # statsmodels Logit: class, sex, age, embarkation
-├── Titanic.ipynb                  # Full interactive analysis notebook
-├── demo.py                        # Standalone demo script (start here)
+│   ├── agcfirstforest.py          # Random Forest with NumPy arrays
+│   └── agc_embark_class_gender.py # statsmodels Logit regression
+├── app.py                         # Streamlit interactive web app
+├── demo.py                        # Standalone CLI demo (start here)
 ├── requirements.txt
+├── .env.example
 └── ReadMe.md
 ```
-
----
-
-## Technologies
-
-| Library | Purpose |
-|---|---|
-| **pandas** | Data loading, cleaning, feature engineering |
-| **NumPy** | Array operations |
-| **Matplotlib** | Visualisation |
-| **scikit-learn** | Logistic Regression, SVM, Random Forest, cross-validation |
-| **statsmodels** | Logit regression with statistical summaries |
-| **patsy** | R-style model formula syntax |
-| **Jupyter** | Interactive notebook exploration |
 
 ---
 
@@ -105,8 +116,9 @@ Titanic-Survival-Prediction/
 git clone https://github.com/LAKSHAY-ATREJA/Titanic-Survival-Prediction.git
 cd Titanic-Survival-Prediction
 
-# 2. (Optional) create a virtual environment
-python3 -m venv venv && source venv/bin/activate
+# 2. Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate      # Windows: venv\Scripts\activate
 
 # 3. Install dependencies
 pip install -r requirements.txt
@@ -116,13 +128,41 @@ pip install -r requirements.txt
 
 ## How to Run
 
-### Quick Demo (recommended)
+### Interactive Web App (recommended)
 
 ```bash
-python demo.py
+streamlit run app.py
 ```
 
-This runs the full pipeline — preprocessing, cross-validation, submission generation, and chart export — in under 30 seconds. Outputs land in `data/output/` and `images/`.
+Opens at [http://localhost:8501](http://localhost:8501) with three tabs:
+
+- **🔮 Predict** — enter passenger details and get model predictions with probabilities
+- **📊 Dataset Analysis** — survival charts and breakdown tables
+- **🤖 Model Performance** — cross-validation results and feature importances
+
+### CLI Demo
+
+```bash
+python3 demo.py
+```
+
+Runs the full pipeline — preprocessing → cross-validation → submission files → charts — in under 30 seconds.
+
+### Individual Example Scripts
+
+```bash
+# Baseline gender model
+python3 "Python Examples/agc_simp_gendermodel.py"
+
+# Gender + class + fare lookup
+python3 "Python Examples/agcgenderclassmodel.py"
+
+# Random Forest via scikit-learn
+python3 "Python Examples/agcfirstforest.py"
+
+# statsmodels Logit regression
+python3 "Python Examples/agc_embark_class_gender.py"
+```
 
 ### Interactive Notebook
 
@@ -130,79 +170,93 @@ This runs the full pipeline — preprocessing, cross-validation, submission gene
 jupyter notebook Titanic.ipynb
 ```
 
-The notebook walks through every step with explanations and inline plots:
+---
 
-1. Data loading and cleaning
-2. Exploratory visualisations
-3. Logistic Regression with statsmodels
-4. SVM with three kernels (linear, RBF, polynomial)
-5. Random Forest classifier
-6. K-fold cross-validation
-7. Kaggle submission export
+## Environment Variables
 
-### Individual Example Scripts
+This project **does not require API keys** for local use.
 
-Each script in `Python Examples/` is a self-contained approach:
+For automated deployment to Hugging Face Spaces via GitHub Actions, add one repo secret:
 
-```bash
-# Baseline gender model
-python "Python Examples/agc_simp_gendermodel.py"
+| Secret | Where to get it |
+|---|---|
+| `HF_TOKEN` | [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) |
 
-# Gender + class + fare lookup table
-python "Python Examples/agcgenderclassmodel.py"
+See `.env.example` for full documentation.
 
-# Random Forest via sklearn
-python "Python Examples/agcfirstforest.py"
+---
 
-# statsmodels Logit regression
-python "Python Examples/agc_embark_class_gender.py"
-```
+## Cloud Deployment
 
-All outputs are written to `data/output/`.
+### Option A — Streamlit Community Cloud (easiest)
+
+1. Push to a public GitHub repo
+2. Visit [share.streamlit.io](https://share.streamlit.io) → "New app"
+3. Select the repo, set main file to `app.py`
+4. Click **Deploy** — live URL in ~60 seconds
+
+### Option B — Hugging Face Spaces (auto via GitHub Actions)
+
+1. Create a Space at [huggingface.co/new-space](https://huggingface.co/new-space) (SDK: Streamlit)
+2. Generate a write token at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
+3. Add `HF_TOKEN` as a GitHub Actions secret in repo Settings → Secrets
+4. Push to `main` — the workflow in `.github/workflows/deploy-hf-spaces.yml` deploys automatically
+
+---
+
+## Model Results
+
+| Model | CV Accuracy (5-fold) | Std Dev |
+|---|---|---|
+| Logistic Regression | 79.9% | ±1.7% |
+| SVM (RBF kernel) | 68.2% | ±1.6% |
+| **Random Forest** | **82.3%** | ±2.3% |
 
 ---
 
 ## Dataset
 
-The Titanic dataset is provided by Kaggle. Download it from the [competition page](https://www.kaggle.com/c/titanic/data) and place the files in the `data/` directory.
-
 | File | Rows | Description |
 |---|---|---|
 | `train.csv` | 891 | Labelled training data (includes `Survived`) |
-| `test.csv` | 418 | Unlabelled test data for submission |
+| `test.csv` | 418 | Unlabelled test data for Kaggle submission |
 
-Key features used:
+Features used:
 
 | Feature | Description |
 |---|---|
-| `Pclass` | Passenger class (1 = 1st, 2 = 2nd, 3 = 3rd) |
-| `Sex` | Gender |
+| `Pclass` | Passenger class (1, 2, 3) |
+| `Sex` | Gender (encoded: 0=female, 1=male) |
 | `Age` | Age in years (median-imputed where missing) |
 | `SibSp` | Number of siblings / spouses aboard |
 | `Parch` | Number of parents / children aboard |
-| `Fare` | Ticket fare |
-| `Embarked` | Port of embarkation (C = Cherbourg, Q = Queenstown, S = Southampton) |
-| `FamilySize`* | Engineered: SibSp + Parch + 1 |
-| `IsAlone`* | Engineered: 1 if travelling alone, else 0 |
+| `Fare` | Ticket fare (median-imputed where missing) |
+| `Embarked` | Port: C=Cherbourg, Q=Queenstown, S=Southampton |
+| `FamilySize`* | SibSp + Parch + 1 |
+| `IsAlone`* | 1 if travelling alone, 0 otherwise |
 
-\* Engineered features added in `demo.py` and the Python Examples.
+\* Engineered features added during preprocessing.
 
 ---
 
-## Results
+## Tech Stack
 
-| Model | CV Accuracy (5-fold) |
+| Library | Purpose |
 |---|---|
-| Logistic Regression | 79.9% |
-| SVM (RBF kernel) | 68.2% |
-| Random Forest | **82.3%** |
+| **pandas** | Data loading, cleaning, feature engineering |
+| **NumPy** | Array operations |
+| **Matplotlib** | Visualisation |
+| **scikit-learn** | Logistic Regression, SVM, Random Forest, cross-validation |
+| **statsmodels** | Logit regression with statistical summaries |
+| **patsy** | R-style model formula syntax |
+| **Streamlit** | Interactive web app |
+| **Jupyter** | Interactive notebook exploration |
 
 ---
 
 ## Project Info
 
-- **Type:** Machine Learning Classification — tutorial / Kaggle benchmark
-- **Dataset:** Kaggle Titanic: Machine Learning from Disaster
+- **Type:** ML Classification — tutorial / Kaggle benchmark
+- **Dataset:** [Kaggle Titanic: Machine Learning from Disaster](https://www.kaggle.com/c/titanic)
 - **Python:** 3.9+
-- **Original analysis:** late 2024
-- **Repository published:** 2026
+- **License:** MIT
