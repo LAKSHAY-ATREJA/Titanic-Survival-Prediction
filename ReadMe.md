@@ -200,7 +200,12 @@ See `.env.example` for full documentation.
 1. Create a Space at [huggingface.co/new-space](https://huggingface.co/new-space) (SDK: Streamlit)
 2. Generate a write token at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
 3. Add `HF_TOKEN` as a GitHub Actions secret in repo Settings → Secrets
-4. Push to `main` — the workflow in `.github/workflows/deploy-hf-spaces.yml` deploys automatically
+4. Enable the CI workflow (requires GitHub OAuth `workflow` scope):
+   ```bash
+   gh auth refresh --hostname github.com --scopes workflow
+   git push origin main
+   ```
+5. Push to `main` — the workflow in `.github/workflows/deploy-hf-spaces.yml` deploys automatically
 
 ---
 
