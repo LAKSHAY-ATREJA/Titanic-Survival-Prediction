@@ -66,7 +66,6 @@ def train_models():
     return models, scores, df
 
 
-@st.cache_data(show_spinner=False)
 def make_survival_charts(_df):
     fig, axes = plt.subplots(1, 3, figsize=(14, 4))
     fig.suptitle('Titanic — Survival Analysis', fontsize=13)
@@ -97,7 +96,6 @@ def make_survival_charts(_df):
     return fig
 
 
-@st.cache_data(show_spinner=False)
 def make_importance_chart(_rf_model):
     importances = _rf_model.feature_importances_
     order = np.argsort(importances)[::-1]
