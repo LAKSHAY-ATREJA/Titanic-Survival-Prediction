@@ -1,4 +1,4 @@
-# 🚢 Titanic Survival Predictor
+# Titanic Survival Predictor
 
 > **Kaggle Competition:** [Titanic – Machine Learning from Disaster](https://www.kaggle.com/c/titanic)
 
@@ -8,9 +8,6 @@ A complete, production-ready machine learning project that predicts passenger su
 
 ## Live Demo
 
-[![Streamlit App](https://img.shields.io/badge/Streamlit-Live%20Demo-FF4B4B?logo=streamlit)](https://titanic-survival-prediction-hekfablehcb9bbr4tq82ba.streamlit.app/)
-[![GitHub](https://img.shields.io/badge/GitHub-LAKSHAY--ATREJA-181717?logo=github)](https://github.com/LAKSHAY-ATREJA/Titanic-Survival-Prediction)
-
 **[Launch the app →](https://titanic-survival-prediction-hekfablehcb9bbr4tq82ba.streamlit.app/)**
 
 ---
@@ -19,12 +16,12 @@ A complete, production-ready machine learning project that predicts passenger su
 
 | Feature | Description |
 |---|---|
-| 🔮 **Interactive predictor** | Enter any passenger profile and get instant survival predictions from all three models |
-| 📊 **Exploratory Data Analysis** | Survival breakdowns by gender, class, age, and embarkation port |
-| 🤖 **Three ML models** | Logistic Regression, SVM (RBF), and Random Forest with probability outputs |
-| 📈 **Rigorous evaluation** | 5-fold stratified cross-validation with mean accuracy and std deviation |
-| 🗂 **Kaggle-ready output** | Generates `PassengerId, Survived` CSV files for each model |
-| 🚀 **CI/CD ready** | GitHub Actions workflow for automatic Hugging Face Spaces deployment |
+| **Interactive predictor** | Enter any passenger profile and get instant survival predictions from all three models |
+| **Exploratory Data Analysis** | Survival breakdowns by gender, class, age, and embarkation port |
+| **Three ML models** | Logistic Regression, SVM (RBF), and Random Forest with probability outputs |
+| **Rigorous evaluation** | 5-fold stratified cross-validation with mean accuracy and std deviation |
+| **Kaggle-ready output** | Generates `PassengerId, Survived` CSV files for each model |
+| **CI/CD ready** | GitHub Actions workflow for automatic Hugging Face Spaces deployment |
 
 ---
 
@@ -134,9 +131,9 @@ streamlit run app.py
 
 Opens at [http://localhost:8501](http://localhost:8501) with three tabs:
 
-- **🔮 Predict** — enter passenger details and get model predictions with probabilities
-- **📊 Dataset Analysis** — survival charts and breakdown tables
-- **🤖 Model Performance** — cross-validation results and feature importances
+- **Predict** — enter passenger details and get model predictions with probabilities
+- **Dataset Analysis** — survival charts and breakdown tables
+- **Model Performance** — cross-validation results and feature importances
 
 ### CLI Demo
 
