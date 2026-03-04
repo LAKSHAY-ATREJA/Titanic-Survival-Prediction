@@ -8,12 +8,10 @@ A complete, production-ready machine learning project that predicts passenger su
 
 ## Live Demo
 
+[![Streamlit App](https://img.shields.io/badge/Streamlit-Live%20Demo-FF4B4B?logo=streamlit)](https://titanic-survival-prediction-hekfablehcb9bbr4tq82ba.streamlit.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-LAKSHAY--ATREJA-181717?logo=github)](https://github.com/LAKSHAY-ATREJA/Titanic-Survival-Prediction)
 
-> **Deploy in one click using Streamlit Community Cloud:**
-> 1. Fork this repo on GitHub
-> 2. Visit [share.streamlit.io](https://share.streamlit.io) → "New app" → select your fork
-> 3. Set main file to `app.py` → Deploy
+**[Launch the app →](https://titanic-survival-prediction-hekfablehcb9bbr4tq82ba.streamlit.app/)**
 
 ---
 
